@@ -15,7 +15,7 @@ type Map[T constraints.Ordered, Y any] struct {
 	hashMap map[T]Y
 }
 
-func New[T constraints.Ordered, Y any](mapSize int) Map[T, Y]  {
+func New[T constraints.Ordered, Y any](mapSize int) Map[T, Y] {
 	if mapSize <= 0 {
 		mapSize = defaultMapSize
 	}
@@ -25,10 +25,11 @@ func New[T constraints.Ordered, Y any](mapSize int) Map[T, Y]  {
 	}
 }
 
-func (m *Map[T, Y]) Get(key T) Y {
+func (m *Map[T, Y]) Get(key T) (Y, bool) {
 	m.mu.RLock()
-	defer m.mu.RUnlock()
-	return m.hashMap[key]
+	v, ok := m.hashMap[key]
+	m.mu.RUnlock()
+	return v, ok
 }
 
 func (m *Map[T, Y]) Set(key T, val Y) {	
